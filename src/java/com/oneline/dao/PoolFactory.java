@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.log4j.Logger;
 
 import com.thoughtworks.xstream.XStream;
@@ -29,8 +30,8 @@ import com.thoughtworks.xstream.io.xml.XppDriver;
 public class PoolFactory 
 {
     private static PoolFactory instance = new PoolFactory();
-    private Map<String, Pool> poolMap;
-    private Pool defaultPool;
+    private Map<String, IPool> poolMap;
+    private IPool defaultPool;
 
     private final static Logger LOG = Logger.getLogger(PoolFactory.class);
 
@@ -41,17 +42,23 @@ public class PoolFactory
     
     private PoolFactory() 
     {
-    	this.poolMap = new HashMap<String, Pool>();
+    	this.poolMap = new HashMap<String, IPool>();
 	}
     
-    public static Pool getDefaultPool()
+    public static IPool getDefaultPool()
     {
     	return PoolFactory.getInstance().defaultPool;
     }
     
-    public Pool getPool(String poolType)
+    public IPool getPool(String poolType,boolean isGCS)
     {
-    	if (!this.poolMap.containsKey(poolType)) this.poolMap.put(poolType, new Pool(poolType));
+    	if (!this.poolMap.containsKey(poolType))
+    	{
+    		if(isGCS)
+    			this.poolMap.put(poolType, new GaePool(poolType));
+    		else
+    			this.poolMap.put(poolType, new Pool(poolType));
+    	}
     	
 			return this.poolMap.get(poolType);
     }
@@ -102,7 +109,7 @@ public class PoolFactory
     public boolean stop()
     {
     	if (this.poolMap == null || this.poolMap.isEmpty()) return true;
-    	for (Pool pool : this.poolMap.values())
+    	for (IPool pool : this.poolMap.values())
 		{
 			pool.stop();
 		}
@@ -128,7 +135,7 @@ public class PoolFactory
 	{
 		LOG.info("Initializing DB Pool - " + config.poolName);
 		System.out.println("Setting up :" + config.toString());
-		Pool pool = this.getPool(config.poolName);
+		IPool pool = this.getPool(config.poolName,config.isGCS);
 		pool.start(config);
 		if (this.defaultPool == null && config.defaultPool) this.defaultPool = pool;
 	}

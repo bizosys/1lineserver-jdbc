@@ -34,6 +34,7 @@ public class DbConfig
     public boolean allowMultiQueries = false;
 	public String poolName;
     public boolean defaultPool = true;
+    public boolean isGCS = false;
     
 	public String driverClass;
 	public String connectionUrl;
@@ -55,7 +56,8 @@ public class DbConfig
 				+ ", allowMultiQueries=" + allowMultiQueries + ", poolName="
 				+ poolName + ", driverClass=" + driverClass
 				+ ", connectionUrl=" + connectionUrl + ", login=" + login
-				+ ", password=" + password + "]";
+				+ ", password=" + password 
+				+ ", isGCS=" + isGCS + "]";
 	}
 
 	/*

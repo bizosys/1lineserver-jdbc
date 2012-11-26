@@ -28,7 +28,7 @@ import java.util.TimerTask;
 
 import org.apache.log4j.Logger;
 
-public class Pool {
+public class Pool implements IPool{
 
 	private DbConfig config = null;
     private Stack<PoolConnection> availablePool = new Stack<PoolConnection>();
