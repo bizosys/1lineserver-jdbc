@@ -1,0 +1,51 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.oneline.dao.util;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class GenerateBroker {
+	List<Generate> observers = new ArrayList<Generate> ();
+
+    public void registerObserver(Generate observer)
+    { 
+        if(!observers.contains(observer)) {
+             observers.add(observer);
+        }
+    }
+    
+    public void unregisterObserver(Generate observer)
+    {
+        //if observer is in the list, remove
+        if(observers.contains(observer)) {
+            observers.remove(observer);   
+        }
+    }
+    
+    public void notifyObservers(DbSchema schema) 
+    {
+        //call update method for every observer
+    	int observersT = observers.size();
+        for (int i=0; i< observersT ; i++ ) {
+        	observers.get(i).process(schema);
+        }
+    }
+    
+    
+	
+}
