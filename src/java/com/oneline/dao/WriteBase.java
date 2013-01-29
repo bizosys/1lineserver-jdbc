@@ -115,6 +115,36 @@ public class WriteBase {
 		}
 	}
 	
+	public Integer insert(String query, List<Object> columns) throws SQLException {
+        try {
+           this.createConnection(true);
+                  this.prepareStmt = this.con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+
+                  int colsT = ( null == columns) ? 0 : columns.size();
+                  for ( int i=1; i  <= colsT; i++ ) {
+                        this.prepareStmt.setObject(i, columns.get(i-1)) ;
+                  }
+                  
+                  this.recordsTouched = prepareStmt.executeUpdate();
+                  if ( LOG.isDebugEnabled()) LOG.debug("Records Touched= " + this.recordsTouched + "-" +  this.hashCode());
+
+               Integer autoIncKey = new Integer(-1);
+               rs = prepareStmt.getGeneratedKeys();
+               if (rs.next()) {
+                  autoIncKey = rs.getInt(1);
+               } else {
+                  throw new SQLException("NO_KEY_GENERATED");
+               }
+               return autoIncKey;
+           } catch (SQLException ex) {
+                  logException(query, columns, ex);
+                  throw ex;
+           } finally {
+                  this.releaseResources();
+           }
+    }
+	
+	
 	public int execute(String query, Object[] columns) throws SQLException {
 	    try {
 	    	this.createConnection(true);

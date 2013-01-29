@@ -94,6 +94,7 @@ public class PoolFactory
 			{
 				for (DbConfig config : dbcL)
 				{
+					System.out.println(config.toString());
 					this.startPool(config);
 				}
 				return true;
