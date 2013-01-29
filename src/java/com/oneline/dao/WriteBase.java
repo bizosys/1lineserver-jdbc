@@ -32,6 +32,7 @@ public class WriteBase {
 	protected int recordsTouched = -1;
 	protected boolean isInTransaction = false;
     private final static Logger LOG = Logger.getLogger(WriteBase.class);
+    public final static Object[] EMPTY_ARRAY = new Object[]{}; 
 	
 	//Only time to create a connection if not there.
 	public void beginTransaction() throws SQLException {
@@ -144,6 +145,9 @@ public class WriteBase {
            }
     }
 	
+	public int execute(String query) throws SQLException {
+		return execute(query, EMPTY_ARRAY);
+	}
 	
 	public int execute(String query, Object[] columns) throws SQLException {
 	    try {
